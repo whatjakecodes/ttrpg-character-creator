@@ -52,7 +52,7 @@ const buildRequest = (apiKey: string, schema: object, content: string) => {
   };
 }
 
-export class DnDCharacterCreator {
+export class LLMCharacterCreator {
   private apiKey: string;
 
   constructor(apiKey: string) {
@@ -88,6 +88,6 @@ export const createClassFromDescription = async (
   description: string,
   apiKey: string
 ): Promise<DnDClass> => {
-  const creator = new DnDCharacterCreator(apiKey);
+  const creator = new LLMCharacterCreator(apiKey);
   return await creator.createCharacter(description);
 };

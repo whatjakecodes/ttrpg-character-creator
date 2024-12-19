@@ -1,15 +1,15 @@
 ﻿import {writable} from 'svelte/store';
-import type {DnDClass} from "$lib/DnDClassSchema";
+import {DnDCharacterCreator} from "./core";
 
 type DndClassStore = {
-  classes: DnDClass[];
+  characterCreator: DnDCharacterCreator;
   loading: boolean;
   error: string | null;
 }
 
 const createDnd5eSrdStore = () => {
   const {subscribe, set, update} = writable<DndClassStore>({
-    classes: [],
+    characterCreator: new DnDCharacterCreator([]),
     loading: false,
     error: null
   });
@@ -21,11 +21,13 @@ const createDnd5eSrdStore = () => {
       const response = await fetch(`/data/5e-SRD-Classes.json`);
       const data = await response.json();
 
-      update(state => ({
-        ...state,
-        classes: data,
-        loading: false
-      }));
+      const creator = new DnDCharacterCreator(data);
+
+      set({
+        characterCreator: creator,
+        loading: false,
+        error: null
+      });
     } catch (error) {
       update(state => ({
         ...state,

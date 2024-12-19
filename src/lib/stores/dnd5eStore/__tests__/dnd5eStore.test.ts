@@ -5,15 +5,20 @@ import type {DnDClass} from "$lib/DnDClassSchema";
 
 describe('DnD5eStore', () => {
   it('should provide class data', async () => {
+    const testData = [{
+      name: 'test-name-1',
+    }, {
+      name: 'test-name-2',
+    }];
     const mockFetch = vi.fn().mockResolvedValue({
-      ok: true, 
-      json: () => Promise.resolve(testClasses)
+      ok: true,
+      json: () => Promise.resolve(testData)
     })
     vi.stubGlobal('fetch', mockFetch);
 
     await dndSRDStore.fetchClasses();
 
-    expect(get(dndSRDStore).classes).toHaveLength(2);
+    expect(get(dndSRDStore).characterCreator.getClassList()).toHaveLength(2);
   });
 
   afterEach(() => {
@@ -22,36 +27,5 @@ describe('DnD5eStore', () => {
   })
 });
 
-const testClasses : DnDClass[] = [{
-  index: '',
-  name: 'test-name-1',
-  hit_die: 0,
-  proficiency_choices: [],
-  proficiencies: [],
-  saving_throws: [],
-  starting_equipment: [],
-  starting_equipment_options: [],
-  class_levels: '',
-  multi_classing: {
-    prerequisites: [],
-    proficiencies: []
-  },
-  subclasses: [],
-  url: ''
-}, {
-  index: '',
-  name: 'test-name-2',
-  hit_die: 0,
-  proficiency_choices: [],
-  proficiencies: [],
-  saving_throws: [],
-  starting_equipment: [],
-  starting_equipment_options: [],
-  class_levels: '',
-  multi_classing: {
-    prerequisites: [],
-    proficiencies: []
-  },
-  subclasses: [],
-  url: ''
-}] 
+
+ 

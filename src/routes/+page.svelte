@@ -59,7 +59,7 @@
                         <div class="text-red-600">{$dndSRDStore.error}</div>
                     {:else}
                         <ClassSelect
-                                options={$dndSRDStore.classes.map(c => c.index)}
+                                options={$dndSRDStore.characterCreator.getClassList().map(c => c.index)}
                                 value={selectedClass}
                                 change={handleClassChange}
                         />
