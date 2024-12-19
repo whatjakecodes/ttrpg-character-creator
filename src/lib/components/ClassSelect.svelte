@@ -19,7 +19,7 @@
     <select
             id="class-select"
             bind:value
-            on:change={() => change(value)}
+            onchange={() => change(value)}
             class="rounded-lg border-gray-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
     >
         <option value="">Select a class...</option>

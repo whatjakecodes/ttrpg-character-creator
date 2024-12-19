@@ -24,3 +24,19 @@ vite.config.ts.timestamp-*
 
 # resources
 dndSources/*
+
+# Ignore all .idea folder contents
+.idea/*
+
+# But keep specific IntelliJ IDEA project settings
+!.idea/runConfigurations/
+!.idea/runConfigurations/*.xml
+!.idea/codeStyles/
+!.idea/codeStyles/*.xml
+!.idea/inspectionProfiles/
+!.idea/inspectionProfiles/*.xml
+!.idea/encodings.xml
+!.idea/misc.xml
+!.idea/vcs.xml
+!.idea/compiler.xml
+!.idea/jarRepositories.xml
