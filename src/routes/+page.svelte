@@ -3,31 +3,38 @@
   import ClassSelect from "$lib/components/ClassSelect.svelte";
 
   import {dndSRDStore} from '$lib/stores/DnD5eStore';
+  import AiCreateForm from "$lib/components/AiCreateForm.svelte";
+  import type {DnDClass} from "$lib/DnDClassSchema";
 
   let selectedClass = '';
-  let apiKey = '';
-  let userInput = '';
-  let loading = false;
-  let errorMessage = '';
+  // let apiKey = '';
+  // let userInput = '';
+  // let loading = false;
+  // let errorMessage = '';
 
-  async function handleSubmit() {
-    loading = true;
-    errorMessage = '';
-    try {
-      const createdClass = await createClassFromDescription(userInput, apiKey);
-      selectedClass = createdClass.name;
-    } catch (e) {
-      if (e instanceof Error) {
-        errorMessage = e.message;
-      }
-    } finally {
-      loading = false;
-    }
-  }
+  // async function handleSubmit() {
+  //   loading = true;
+  //   errorMessage = '';
+  //   try {
+  //     const createdClass = await createClassFromDescription(userInput, apiKey);
+  //     selectedClass = createdClass.name;
+  //   } catch (e) {
+  //     if (e instanceof Error) {
+  //       errorMessage = e.message;
+  //     }
+  //   } finally {
+  //     loading = false;
+  //   }
+  // }
 
-  function handleClassChange(selection: string) {
+  const handleClassChange = (selection: string) => {
     selectedClass = selection;
   }
+
+  const onAiClassCreated = (createdClass: DnDClass) => {
+    selectedClass = createdClass.name;
+  };
+
 </script>
 
 <div class="min-h-screen p-4 md:p-8 bg-gray-50">
@@ -79,55 +86,10 @@
                         />
                     {/if}
                 </div>
-                
+
                 <p class="p-1 mb-1">Alternatively, generate a class with an LLM:</p>
 
-                <form
-                        on:submit|preventDefault={handleSubmit}
-                        class="bg-white rounded-xl shadow-md p-6"
-                >
-                    <div class="space-y-6">
-                        <div class="flex flex-col gap-2">
-                            <label for="apiKey" class="text-sm font-medium text-gray-700">
-                                API Key
-                            </label>
-                            <input
-                                    type="password"
-                                    id="apiKey"
-                                    bind:value={apiKey}
-                                    placeholder="Enter your Anthropic API key"
-                                    class="rounded-lg border-gray-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                        </div>
-
-                        <div class="flex flex-col gap-2">
-                            <label for="message" class="text-sm font-medium text-gray-700">
-                                Describe your character
-                            </label>
-                            <textarea
-                                    id="message"
-                                    bind:value={userInput}
-                                    rows="4"
-                                    placeholder="Enter a character class description"
-                                    class="rounded-lg border-gray-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            ></textarea>
-                        </div>
-
-                        <button
-                                type="submit"
-                                disabled={loading}
-                                class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                        >
-                            {loading ? 'Sending...' : 'Generate Class'}
-                        </button>
-
-                        {#if errorMessage.trim().length > 0}
-                            <div class="text-red-600 font-medium bg-red-50 p-4 rounded-lg">
-                                Error: {errorMessage}
-                            </div>
-                        {/if}
-                    </div>
-                </form>
+                <AiCreateForm create={onAiClassCreated}/>
             </div>
         </div>
     </div>
