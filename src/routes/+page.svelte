@@ -1,31 +1,10 @@
 ﻿<script lang="ts">
-  import {createClassFromDescription} from "$lib/CharacterCreatorClient";
   import ClassSelect from "$lib/components/ClassSelect.svelte";
-
-  import {dndSRDStore} from '$lib/stores/DnD5eStore';
+  import {dndSRDStore} from '$lib/stores/dnd5eStore/index';
   import AiCreateForm from "$lib/components/AiCreateForm.svelte";
   import type {DnDClass} from "$lib/DnDClassSchema";
 
   let selectedClass = '';
-  // let apiKey = '';
-  // let userInput = '';
-  // let loading = false;
-  // let errorMessage = '';
-
-  // async function handleSubmit() {
-  //   loading = true;
-  //   errorMessage = '';
-  //   try {
-  //     const createdClass = await createClassFromDescription(userInput, apiKey);
-  //     selectedClass = createdClass.name;
-  //   } catch (e) {
-  //     if (e instanceof Error) {
-  //       errorMessage = e.message;
-  //     }
-  //   } finally {
-  //     loading = false;
-  //   }
-  // }
 
   const handleClassChange = (selection: string) => {
     selectedClass = selection;
