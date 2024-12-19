@@ -1,10 +1,9 @@
 ﻿import {afterEach, describe, expect, it, vi} from 'vitest';
 import {dndSRDStore} from '../index';
 import {get} from "svelte/store";
-import type {DnDClass} from "$lib/DnDClassSchema";
 
 describe('DnD5eStore', () => {
-  it('should provide class data', async () => {
+  it('should provide classes after fetch', async () => {
     const testData = [{
       name: 'test-name-1',
     }, {
