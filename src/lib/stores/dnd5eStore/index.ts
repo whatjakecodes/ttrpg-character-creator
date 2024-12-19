@@ -18,9 +18,11 @@ const createDnd5eSrdStore = () => {
     update(state => ({...state, loading: true, error: null}));
 
     try {
+      console.log("fetching data... ")
+      
       const response = await fetch(`/data/5e-SRD-Classes.json`);
       const data = await response.json();
-
+      console.log("got data: ", {data})
       const creator = new DnDCharacterCreator(data);
 
       set({

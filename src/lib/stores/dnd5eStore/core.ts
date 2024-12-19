@@ -8,6 +8,7 @@ export class DnDCharacterCreator {
   }
 
   getClassList() {
+    console.log("found classes: " + this.classes.length)
     return this.classes;
   }
 }
