@@ -1,6 +1,6 @@
 ﻿<script lang="ts">
   import ClassSelect from "$lib/components/ClassSelect.svelte";
-  import {dndSRDStore} from '$lib/stores/dnd5eStore/index';
+  import {dndSRDStore} from '$lib/stores/dnd5eStore';
   import AiCreateForm from "$lib/components/AiCreateForm.svelte";
   import type {DnDClass} from "$lib/DnDClassSchema";
 
