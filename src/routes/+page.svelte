@@ -37,15 +37,7 @@
                     </div>
 
                     <div class="flex flex-col gap-2">
-                        <label for="char-class" class="text-sm font-medium text-gray-700">
-                            Class
-                        </label>
-                        <input
-                                id="char-class"
-                                type="text"
-                                bind:value={selectedClass}
-                                class="rounded-lg border-gray-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
+                        <p>Selected Class: {selectedClass}</p>
                     </div>
                 </div>
             </div>
@@ -59,7 +51,7 @@
                         <div class="text-red-600">{$dndSRDStore.error}</div>
                     {:else}
                         <ClassSelect
-                                options={$dndSRDStore.characterCreator.getClassList().map(c => c.index)}
+                                options={$dndSRDStore.characterCreator.getClassList().map(c => c.name)}
                                 value={selectedClass}
                                 change={handleClassChange}
                         />
