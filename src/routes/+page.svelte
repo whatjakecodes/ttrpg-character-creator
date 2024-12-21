@@ -4,15 +4,21 @@
   import AiCreateForm from "$lib/components/AiCreateForm.svelte";
   import type {DnDClass} from "$lib/DnDClassSchema";
 
-  let selectedClass = '';
+  let selectedClass: DnDClass | undefined;
 
-  const handleClassChange = (selection: string) => {
-    selectedClass = selection;
+  const handleClassChange = (classIndex: string) => {
+    selectedClass = $dndSRDStore.characterCreator.getClass(classIndex)
   }
 
   const onAiClassCreated = (createdClass: DnDClass) => {
-    selectedClass = createdClass.name;
+    selectedClass = createdClass;
   };
+
+  function getSkillChoiceNames(): string {
+    if (!selectedClass) return '';
+    const options = selectedClass.skill_proficiency_choices.flatMap(c => c.from.options);
+    return options.map(o => o.item?.name.replace('Skill: ', '')).join(', ');
+  }
 
 </script>
 
@@ -36,9 +42,14 @@
                         />
                     </div>
 
-                    <div class="flex flex-col gap-2">
-                        <p>Selected Class: {selectedClass}</p>
-                    </div>
+                    {#if selectedClass}
+                        <div class="flex flex-col gap-2">
+                            <p>Selected Class: {selectedClass.name}</p>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <p>Skill Choices: {getSkillChoiceNames()}</p>
+                        </div>
+                    {/if}
                 </div>
             </div>
 
@@ -51,8 +62,8 @@
                         <div class="text-red-600">{$dndSRDStore.error}</div>
                     {:else}
                         <ClassSelect
-                                options={$dndSRDStore.characterCreator.getClassList().map(c => c.name)}
-                                value={selectedClass}
+                                options={$dndSRDStore.characterCreator.getClassList()}
+                                value={selectedClass?.index}
                                 change={handleClassChange}
                         />
                     {/if}

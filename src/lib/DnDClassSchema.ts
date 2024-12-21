@@ -13,7 +13,7 @@ interface EquipmentQuantity {
 }
 
 // Choice option types
-interface ChoiceOption {
+export interface ChoiceOption {
   option_type: string;
   item?: APIReference;
   count?: number;
@@ -35,7 +35,7 @@ interface ChoiceOption {
 }
 
 // Choice set type
-interface ChoiceSet {
+export interface ChoiceSet {
   desc: string;
   choose: number;
   type: string;
@@ -71,7 +71,8 @@ export interface DnDClass {
   hit_die: number;
 
   // Proficiencies and skills
-  proficiency_choices: ChoiceSet[];
+  skill_proficiency_choices: ChoiceSet[];
+  tool_proficiency_choices: ChoiceSet[];
   proficiencies: APIReference[];
   saving_throws: APIReference[];
 

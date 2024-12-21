@@ -10,4 +10,8 @@ export class DnDCharacterCreator {
   getClassList() {
     return this.classes;
   }
+
+  getClass(classIndex: string) {
+    return this.classes.findLast(c => c.index === classIndex);
+  }
 }

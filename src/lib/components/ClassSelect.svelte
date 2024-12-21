@@ -1,11 +1,14 @@
 ﻿<script lang="ts">
+  import type {DnDClass} from "$lib/DnDClassSchema";
+
   interface Props {
     change: (val: string) => void;
-    options: string[];
-    value: string;
+    options: DnDClass[];
+    value?: string;
   }
-  let { change, options, value }: Props = $props();
-  
+
+  let {change, options, value}: Props = $props();
+
 </script>
 
 <div class="flex flex-col gap-2">
@@ -19,12 +22,14 @@
     <select
             id="class-select"
             bind:value
-            onchange={() => change(value)}
+            onchange={(e) => {
+                change(e.currentTarget.value);
+            }}
             class="rounded-lg border-gray-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
     >
-        <option value="">Select a class...</option>
+        <option value={undefined} disabled>Select a class...</option>
         {#each options as option}
-            <option value={option}>{option}</option>
+            <option value={option.index}>{option.name}</option>
         {/each}
     </select>
 </div>
