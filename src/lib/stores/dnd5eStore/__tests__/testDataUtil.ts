@@ -1,4 +1,4 @@
-﻿import type {ChoiceOption, ChoiceSet, DnDClass} from "$lib/DnDClassSchema";
+﻿import type {APIReference, ChoiceOption, ChoiceSet, DnDAbility, DnDClass} from "$lib/DnDClassSchema";
 import v from 'voca';
 
 export function createDndClass(options?: Partial<DnDClass>): DnDClass {
@@ -38,7 +38,6 @@ export function createSkillProficiencyChoices(...skillNames: string[]): ChoiceSe
   }];
 }
 
-
 export function createSkillProficiencyChoice(options?: Partial<ChoiceSet>): ChoiceSet {
   return {
     desc: "Choose two from Test Skill 1, Test Skill 2",
@@ -66,6 +65,16 @@ export function createSkillProficiencyChoiceOption(options?: Partial<ChoiceOptio
     },
     ...options
   };
+}
+
+export function createSavingThrowProficiencies(...abilities: DnDAbility[]): APIReference[] {
+  return abilities.map(ability => {
+    return {
+      index: ability.toLowerCase(),
+      name: ability,
+      url: `/api/ability-scores/${ability.toLowerCase()}`
+    }
+  })
 }
 
 function getRandomInt(min: number, max: number): number {

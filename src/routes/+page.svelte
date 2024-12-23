@@ -2,8 +2,9 @@
   import ClassSelect from "$lib/components/ClassSelect.svelte";
   import {dndSRDStore} from '$lib/stores/dnd5eStore';
   import AiCreateForm from "$lib/components/AiCreateForm.svelte";
-  import type {DnDClass} from "$lib/DnDClassSchema";
+  import type {DnDAbility, DnDClass} from "$lib/DnDClassSchema";
   import ClassSkillChooser from "$lib/components/ClassSkillChooser.svelte";
+  import {presentDnDAbility} from "$lib";
 
   let selectedClass: DnDClass | undefined;
   let selectedSkillIndicies: string[];
@@ -38,6 +39,10 @@
     selectedSkillIndicies = skillIndices;
   }
 
+  function getSavingThrowProficiencies(forClass: DnDClass): string {
+    return forClass.saving_throws.map(st => presentDnDAbility(st.name as DnDAbility)).join(", ");
+  }
+
 </script>
 
 <div class="min-h-screen p-4 md:p-8 bg-gray-50">
@@ -66,6 +71,9 @@
                         </div>
                         <div class="flex flex-col gap-2">
                             <p>Skill Choices: {getSkillChoiceNames()}</p>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <p>Saving Throw Proficiencies: {getSavingThrowProficiencies(selectedClass)}</p>
                         </div>
                     {/if}
                 </div>

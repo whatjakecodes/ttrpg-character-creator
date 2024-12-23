@@ -1,6 +1,5 @@
-﻿
-// Basic reference type used throughout the schema
-interface APIReference {
+﻿// Basic reference type used throughout the schema
+export interface APIReference {
   index: string;
   name: string;
   url: string;
@@ -63,6 +62,8 @@ interface Spellcasting {
   spellcasting_ability: APIReference;
   info: SpellcastingInfo[];
 }
+
+export type DnDAbility = 'CON' | 'STR' | 'DEX' | 'WIS' | 'INT' | 'CHA';
 
 // Main class interface
 export interface DnDClass {
