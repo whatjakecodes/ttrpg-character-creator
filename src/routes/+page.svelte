@@ -3,8 +3,10 @@
   import {dndSRDStore} from '$lib/stores/dnd5eStore';
   import AiCreateForm from "$lib/components/AiCreateForm.svelte";
   import type {DnDClass} from "$lib/DnDClassSchema";
+  import ClassSkillChooser from "$lib/components/ClassSkillChooser.svelte";
 
   let selectedClass: DnDClass | undefined;
+  let selectedSkillIndicies: string[];
 
   const handleClassChange = (classIndex: string) => {
     selectedClass = $dndSRDStore.characterCreator.getClass(classIndex)
@@ -18,6 +20,22 @@
     if (!selectedClass) return '';
     const options = selectedClass.skill_proficiency_choices.flatMap(c => c.from.options);
     return options.map(o => o.item?.name.replace('Skill: ', '')).join(', ');
+  }
+
+  function getSkillChoiceOptions(forClass: DnDClass): { name: string, index: string }[] {
+    return forClass.skill_proficiency_choices
+      .flatMap(c => c.from.options)
+      .filter(o => o.item != undefined)
+      .map(o => {
+        return {
+          name: o.item!.name.replace('Skill: ', ''),
+          index: o.item!.index
+        }
+      });
+  }
+
+  const handleSkillChoiceChange = (skillIndices: string[]) => {
+    selectedSkillIndicies = skillIndices;
   }
 
 </script>
@@ -66,6 +84,12 @@
                                 value={selectedClass?.index}
                                 change={handleClassChange}
                         />
+                        {#if selectedClass}
+                            <ClassSkillChooser
+                                    options={getSkillChoiceOptions(selectedClass)}
+                                    onChange={handleSkillChoiceChange}
+                            />
+                        {/if}
                     {/if}
                 </div>
 
