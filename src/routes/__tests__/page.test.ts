@@ -56,6 +56,29 @@ describe("main page", () => {
     expect(subject.getByText('Selected Background: Soldier')).toBeInTheDocument();
   });
 
+  it('should show skill proficiencies after background is selected', async () => {
+    setupCharacterClasses(); // todo: setup class to have Religion, but not Insight, as skill choices
+
+    const user = userEvent.setup();
+    const subject = render(HomePage);
+
+    await dndSRDStore.fetchClasses();
+
+    expect(screen.queryByLabelText('Choose Skills:')).not.toBeInTheDocument();
+    await selectClass(user, 'TestClass2Name');
+    expect(screen.queryByLabelText('Choose Skills:')).not.toBeInTheDocument();
+    await selectBackground(user, 'Acolyte'); // skills: Insight, Religion
+
+    let skillButtonGroup = screen.getByLabelText('Choose Skills:');
+    expect(skillButtonGroup).toBeInTheDocument();
+
+    expect(subject.getByText('Selected Skills: Insight, Religion')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', {name: 'TSkill1'}));
+    
+    expect(subject.getByText('Selected Skills: Insight, Religion, TSkill1')).toBeInTheDocument();
+  });
+
   it('should show species options', () => {
     // dwarf, elf, halfling, human
   });

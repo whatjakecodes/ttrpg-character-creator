@@ -1,4 +1,6 @@
 ﻿// Basic reference type used throughout the schema
+import type {DnDSkillName} from "$lib/srdData/skills";
+
 export interface APIReference {
   index: string;
   name: string;

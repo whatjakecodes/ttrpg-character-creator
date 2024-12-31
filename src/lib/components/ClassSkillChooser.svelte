@@ -20,7 +20,8 @@
   }
 </script>
 
-<div class="flex flex-wrap gap-4 p-4">
+<label for="choose-skills" id="choose-skills-label" class="text-sm font-medium text-gray-700">Choose Skills:</label>
+<div role="group" id="choose-skills" aria-labelledby="choose-skills-label" class="flex flex-wrap gap-4 p-4">
     {#each options as {name, index}}
         <button
                 onclick={() => handleToggle(index)}

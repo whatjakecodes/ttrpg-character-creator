@@ -5,9 +5,11 @@
   import CharacterCreatorForm from "$lib/components/CharacterCreatorForm.svelte";
   import {type DnDAbility, presentDnDAbility} from "$lib/srdData/abilities";
   import type {DnDBackground} from "$lib/srdData/backgrounds";
+  import type {DnDSkillName} from "$lib/srdData/skills";
 
   let selectedClass: DnDClass | undefined;
   let selectedBackground: DnDBackground | undefined;
+  let selectedSkills: DnDSkillName[] = [];
 
   const handleCharacterClassChange = (newClass: DnDClass) => {
     selectedClass = newClass;
@@ -17,11 +19,9 @@
     selectedBackground = newBackground;
   };
 
-  function getSkillChoiceNames(): string {
-    if (!selectedClass) return '';
-    const options = selectedClass.skill_proficiency_choices.flatMap(c => c.from.options);
-    return options.map(o => o.item?.name.replace('Skill: ', '')).join(', ');
-  }
+  const handleSkillsChange = (newSkills: DnDSkillName[]) => {
+    selectedSkills = newSkills;
+  };
 
   function getSavingThrowProficiencies(forClass: DnDClass): string {
     return forClass.saving_throws.map(st => presentDnDAbility(st.name as DnDAbility)).join(", ");
@@ -59,8 +59,9 @@
                         {/if}
 
                         <div class="flex flex-col gap-2">
-                            <p>Skill Choices: {getSkillChoiceNames()}</p>
+                            <p>Selected Skills: {selectedSkills.join(', ')}</p>
                         </div>
+
                         <div class="flex flex-col gap-2">
                             <p>Saving Throw Proficiencies: {getSavingThrowProficiencies(selectedClass)}</p>
                         </div>
@@ -82,6 +83,7 @@
                                 background={selectedBackground}
                                 onCharacterClassChange={handleCharacterClassChange}
                                 onBackgroundChange={handleBackgroundChange}
+                                onSkillsChange={handleSkillsChange}
                         />
                     {/if}
 
