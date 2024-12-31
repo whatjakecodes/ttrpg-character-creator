@@ -1,7 +1,7 @@
 ﻿import {describe, expect, it, vi} from "vitest";
 import HomePage from '../+page.svelte';
-import {render} from "@testing-library/svelte";
-import {userEvent} from "@testing-library/user-event";
+import {render, screen} from "@testing-library/svelte";
+import {type UserEvent, userEvent} from "@testing-library/user-event";
 import {dndSRDStore} from "$lib/stores/dnd5eStore";
 import type {DnDClass} from "$lib/DnDClassSchema";
 import {
@@ -9,6 +9,18 @@ import {
   createSavingThrowProficiencies,
   createSkillProficiencyChoices
 } from "$lib/stores/dnd5eStore/__tests__/testDataUtil";
+
+async function selectClass<T>(user: UserEvent, className: string) {
+  const classSelect = screen.getByRole('combobox', {name: 'Pick a 5e Character Class'});
+  await user.click(classSelect);
+  await user.selectOptions(classSelect, className);
+}
+
+async function selectBackground(user: UserEvent, background: string) {
+  const select = screen.getByRole('combobox', {name: 'Pick a 5e Background'});
+  await user.click(select);
+  await user.selectOptions(select, background);
+}
 
 describe("main page", () => {
   it('should render', () => {
@@ -21,8 +33,27 @@ describe("main page", () => {
     // acolyte, criminal, sage, soldier
   });
 
-  it('should show background options', () => {
-    // acolyte, criminal, sage, soldier
+  it('should show background options after class is selected', async () => {
+    setupCharacterClasses();
+
+    const user = userEvent.setup();
+    const subject = render(HomePage);
+
+    await dndSRDStore.fetchClasses();
+
+    let backgroundSelect = subject.queryByRole('combobox', {name: 'Pick a 5e Background'});
+    expect(backgroundSelect).not.toBeInTheDocument();
+
+    await selectClass(user, 'TestClass2Name');
+
+    expect(subject.getByRole('combobox', {name: 'Pick a 5e Background'})).toBeInTheDocument();
+
+    await selectBackground(user, 'Acolyte');
+    await selectBackground(user, 'Criminal');
+    await selectBackground(user, 'Sage');
+    await selectBackground(user, 'Soldier');
+
+    expect(subject.getByText('Selected Background: Soldier')).toBeInTheDocument();
   });
 
   it('should show species options', () => {
@@ -34,32 +65,33 @@ describe("main page", () => {
     // weapon proficiencies,
     // armor training, 
     // starting equipment choices
-
-    const testData: DnDClass[] = [
-      createDndClass({
-        name: 'TestClass2Name',
-        index: 'testClass2index',
-        skill_proficiency_choices: createSkillProficiencyChoices("TSkill1", "TSkill2"),
-        saving_throws: createSavingThrowProficiencies("WIS", "CHA")
-      })
-    ];
-    const mockFetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(testData)
-    })
-    vi.stubGlobal('fetch', mockFetch);
+    setupCharacterClasses();
 
     const user = userEvent.setup();
     const subject = render(HomePage);
 
     await dndSRDStore.fetchClasses();
 
-    const classSelect = subject.getByRole('combobox', {name: 'Pick a 5e Character Class'});
-    await user.click(classSelect);
-    await user.selectOptions(classSelect, 'TestClass2Name');
+    await selectClass(user, 'TestClass2Name');
 
     expect(subject.getByText('Selected Class: TestClass2Name')).toBeInTheDocument();
     expect(subject.getByText('Skill Choices: TSkill1, TSkill2')).toBeInTheDocument();
     expect(subject.getByText('Saving Throw Proficiencies: Wisdom, Charisma')).toBeInTheDocument();
   });
 });
+
+function setupCharacterClasses() {
+  const testData: DnDClass[] = [
+    createDndClass({
+      name: 'TestClass2Name',
+      index: 'testClass2index',
+      skill_proficiency_choices: createSkillProficiencyChoices("TSkill1", "TSkill2"),
+      saving_throws: createSavingThrowProficiencies("WIS", "CHA")
+    })
+  ];
+  const mockFetch = vi.fn().mockResolvedValue({
+    ok: true,
+    json: () => Promise.resolve(testData)
+  })
+  vi.stubGlobal('fetch', mockFetch);
+}

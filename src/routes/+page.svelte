@@ -1,14 +1,21 @@
 ﻿<script lang="ts">
   import {dndSRDStore} from '$lib/stores/dnd5eStore';
   import AiCreateForm from "$lib/components/AiCreateForm.svelte";
-  import type {DnDAbility, DnDClass} from "$lib/DnDClassSchema";
+  import type {DnDClass} from "$lib/DnDClassSchema";
   import {presentDnDAbility} from "$lib";
   import CharacterCreatorForm from "$lib/components/CharacterCreatorForm.svelte";
+  import type {DnDAbility} from "$lib/srdData/abilities";
+  import type {DnDBackground} from "$lib/srdData/backgrounds";
 
   let selectedClass: DnDClass | undefined;
+  let selectedBackground: DnDBackground | undefined;
 
-  const handleCharacterClassChange = (createdClass: DnDClass) => {
-    selectedClass = createdClass;
+  const handleCharacterClassChange = (newClass: DnDClass) => {
+    selectedClass = newClass;
+  };
+
+  const handleBackgroundChange = (newBackground: DnDBackground) => {
+    selectedBackground = newBackground;
   };
 
   function getSkillChoiceNames(): string {
@@ -47,6 +54,11 @@
                         <div class="flex flex-col gap-2">
                             <p>Selected Class: {selectedClass.name}</p>
                         </div>
+
+                        {#if selectedBackground}
+                            <p>Selected Background: {selectedBackground.name}</p>
+                        {/if}
+
                         <div class="flex flex-col gap-2">
                             <p>Skill Choices: {getSkillChoiceNames()}</p>
                         </div>
@@ -67,8 +79,10 @@
                     {:else}
                         <CharacterCreatorForm
                                 classes={$dndSRDStore.characterCreator.getClassList()}
-                                characterClass="{selectedClass}"
+                                characterClass={selectedClass}
+                                background={selectedBackground}
                                 onCharacterClassChange={handleCharacterClassChange}
+                                onBackgroundChange={handleBackgroundChange}
                         />
                     {/if}
 

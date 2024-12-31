@@ -1,0 +1,1 @@
+﻿export type DnDAbility = 'CON' | 'STR' | 'DEX' | 'WIS' | 'INT' | 'CHA';

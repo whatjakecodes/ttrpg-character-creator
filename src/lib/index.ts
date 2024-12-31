@@ -1,6 +1,5 @@
 // place files you want to import through the `$lib` alias in this folder.
-import type {DnDAbility} from "$lib/DnDClassSchema";
-
+import type {DnDAbility} from './srdData/abilities';
 
 export function presentDnDAbility(name: DnDAbility) {
   const lookup: Record<DnDAbility, string> = {

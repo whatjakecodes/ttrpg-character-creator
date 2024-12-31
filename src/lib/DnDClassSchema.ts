@@ -63,7 +63,6 @@ interface Spellcasting {
   info: SpellcastingInfo[];
 }
 
-export type DnDAbility = 'CON' | 'STR' | 'DEX' | 'WIS' | 'INT' | 'CHA';
 
 // Main class interface
 export interface DnDClass {

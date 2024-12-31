@@ -6,7 +6,6 @@ export const load = (() => {
       {name: 'cleric'},
       {name: 'druid'},
       {name: 'paladin'}],
-    message: 'Welcome to Jake\'s character creator'
   };
 
   return {

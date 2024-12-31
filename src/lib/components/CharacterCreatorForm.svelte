@@ -4,12 +4,24 @@
   import ClassSkillChooser from "$lib/components/ClassSkillChooser.svelte";
   import type {DnDClass} from "$lib/DnDClassSchema";
   import type {CharacterCreatorFormProps} from "$lib/components/types";
+  import {backgrounds} from "$lib/srdData/backgrounds";
+  import BackgroundSelect from "$lib/components/BackgroundSelect.svelte";
 
-  const {classes, characterClass, onCharacterClassChange}: CharacterCreatorFormProps = $props();
+  const {
+    classes,
+    characterClass,
+    background,
+    onCharacterClassChange,
+    onBackgroundChange,
+  }: CharacterCreatorFormProps = $props();
 
   const handleClassChange = (classIndex: string) => {
     const selectedClass = classes.findLast(c => c.index === classIndex);
     onCharacterClassChange(selectedClass!);
+  }
+  const handleBackgroundChange = (backgroundIndex: string) => {
+    const selectedBackground = backgrounds.findLast(b => b.index === backgroundIndex);
+    onBackgroundChange(selectedBackground!);
   }
 
   function getSkillChoiceOptions(forClass: DnDClass): { name: string, index: string }[] {
@@ -35,14 +47,15 @@
         value={characterClass?.index}
         change={handleClassChange}
 />
-<!--<BackgroundSelect-->
-<!--        options={backgrounds}-->
-<!--        value={background?.index}-->
-<!--        change={handleBackgroundChange}-->
-<!--/>-->
+
 {#if characterClass}
     <ClassSkillChooser
             options={getSkillChoiceOptions(characterClass)}
             onChange={handleSkillChoiceChange}
+    />
+    <BackgroundSelect
+            options={backgrounds}
+            value={background?.index}
+            onChange={handleBackgroundChange}
     />
 {/if}
