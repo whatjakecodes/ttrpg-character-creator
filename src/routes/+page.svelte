@@ -7,10 +7,6 @@
 
   let selectedClass: DnDClass | undefined;
 
-  const onAiClassCreated = (createdClass: DnDClass) => {
-    selectedClass = createdClass;
-  };  
-  
   const handleCharacterClassChange = (createdClass: DnDClass) => {
     selectedClass = createdClass;
   };
@@ -64,12 +60,23 @@
             <!-- Right side form -->
             <div class="lg:w-1/2">
                 <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-                    <CharacterCreatorForm characterClass="{selectedClass}" onCharacterClassChange={handleCharacterClassChange}/>
+                    {#if $dndSRDStore.loading}
+                        <div>Loading classes...</div>
+                    {:else if $dndSRDStore.error}
+                        <div class="text-red-600">{$dndSRDStore.error}</div>
+                    {:else}
+                        <CharacterCreatorForm
+                                classes={$dndSRDStore.characterCreator.getClassList()}
+                                characterClass="{selectedClass}"
+                                onCharacterClassChange={handleCharacterClassChange}
+                        />
+                    {/if}
+
                 </div>
 
                 <p class="p-1 mb-1">Alternatively, generate a class with an LLM:</p>
 
-                <AiCreateForm create={onAiClassCreated}/>
+                <AiCreateForm create={handleCharacterClassChange}/>
             </div>
         </div>
     </div>

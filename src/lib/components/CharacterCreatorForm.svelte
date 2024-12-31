@@ -2,18 +2,18 @@
 
   import ClassSelect from "$lib/components/ClassSelect.svelte";
   import ClassSkillChooser from "$lib/components/ClassSkillChooser.svelte";
-  import {dndSRDStore} from '$lib/stores/dnd5eStore';
   import type {DnDClass} from "$lib/DnDClassSchema";
 
   interface CharacterCreatorFormProps {
+    classes: DnDClass[];
     characterClass: DnDClass | undefined;
     onCharacterClassChange: (newClass: DnDClass) => void;
   }
 
-  const {characterClass, onCharacterClassChange}: CharacterCreatorFormProps = $props();
-  
+  const {classes, characterClass, onCharacterClassChange}: CharacterCreatorFormProps = $props();
+
   const handleClassChange = (classIndex: string) => {
-    const selectedClass = $dndSRDStore.characterCreator.getClass(classIndex)
+    const selectedClass = classes.findLast(c => c.index === classIndex);
     onCharacterClassChange(selectedClass!);
   }
 
@@ -35,20 +35,14 @@
   }
 </script>
 
-{#if $dndSRDStore.loading}
-    <div>Loading classes...</div>
-{:else if $dndSRDStore.error}
-    <div class="text-red-600">{$dndSRDStore.error}</div>
-{:else}
-    <ClassSelect
-            options={$dndSRDStore.characterCreator.getClassList()}
-            value={characterClass?.index}
-            change={handleClassChange}
+<ClassSelect
+        options={classes}
+        value={characterClass?.index}
+        change={handleClassChange}
+/>
+{#if characterClass}
+    <ClassSkillChooser
+            options={getSkillChoiceOptions(characterClass)}
+            onChange={handleSkillChoiceChange}
     />
-    {#if characterClass}
-        <ClassSkillChooser
-                options={getSkillChoiceOptions(characterClass)}
-                onChange={handleSkillChoiceChange}
-        />
-    {/if}
 {/if}
