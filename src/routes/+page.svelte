@@ -1,19 +1,17 @@
 ﻿<script lang="ts">
-  import ClassSelect from "$lib/components/ClassSelect.svelte";
   import {dndSRDStore} from '$lib/stores/dnd5eStore';
   import AiCreateForm from "$lib/components/AiCreateForm.svelte";
   import type {DnDAbility, DnDClass} from "$lib/DnDClassSchema";
-  import ClassSkillChooser from "$lib/components/ClassSkillChooser.svelte";
   import {presentDnDAbility} from "$lib";
+  import CharacterCreatorForm from "$lib/components/CharacterCreatorForm.svelte";
 
   let selectedClass: DnDClass | undefined;
-  let selectedSkillIndicies: string[];
-
-  const handleClassChange = (classIndex: string) => {
-    selectedClass = $dndSRDStore.characterCreator.getClass(classIndex)
-  }
 
   const onAiClassCreated = (createdClass: DnDClass) => {
+    selectedClass = createdClass;
+  };  
+  
+  const handleCharacterClassChange = (createdClass: DnDClass) => {
     selectedClass = createdClass;
   };
 
@@ -21,22 +19,6 @@
     if (!selectedClass) return '';
     const options = selectedClass.skill_proficiency_choices.flatMap(c => c.from.options);
     return options.map(o => o.item?.name.replace('Skill: ', '')).join(', ');
-  }
-
-  function getSkillChoiceOptions(forClass: DnDClass): { name: string, index: string }[] {
-    return forClass.skill_proficiency_choices
-      .flatMap(c => c.from.options)
-      .filter(o => o.item != undefined)
-      .map(o => {
-        return {
-          name: o.item!.name.replace('Skill: ', ''),
-          index: o.item!.index
-        }
-      });
-  }
-
-  const handleSkillChoiceChange = (skillIndices: string[]) => {
-    selectedSkillIndicies = skillIndices;
   }
 
   function getSavingThrowProficiencies(forClass: DnDClass): string {
@@ -82,23 +64,7 @@
             <!-- Right side form -->
             <div class="lg:w-1/2">
                 <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-                    {#if $dndSRDStore.loading}
-                        <div>Loading classes...</div>
-                    {:else if $dndSRDStore.error}
-                        <div class="text-red-600">{$dndSRDStore.error}</div>
-                    {:else}
-                        <ClassSelect
-                                options={$dndSRDStore.characterCreator.getClassList()}
-                                value={selectedClass?.index}
-                                change={handleClassChange}
-                        />
-                        {#if selectedClass}
-                            <ClassSkillChooser
-                                    options={getSkillChoiceOptions(selectedClass)}
-                                    onChange={handleSkillChoiceChange}
-                            />
-                        {/if}
-                    {/if}
+                    <CharacterCreatorForm characterClass="{selectedClass}" onCharacterClassChange={handleCharacterClassChange}/>
                 </div>
 
                 <p class="p-1 mb-1">Alternatively, generate a class with an LLM:</p>
