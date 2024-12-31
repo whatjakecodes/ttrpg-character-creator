@@ -2,9 +2,8 @@
   import {dndSRDStore} from '$lib/stores/dnd5eStore';
   import AiCreateForm from "$lib/components/AiCreateForm.svelte";
   import type {DnDClass} from "$lib/DnDClassSchema";
-  import {presentDnDAbility} from "$lib";
   import CharacterCreatorForm from "$lib/components/CharacterCreatorForm.svelte";
-  import type {DnDAbility} from "$lib/srdData/abilities";
+  import {type DnDAbility, presentDnDAbility} from "$lib/srdData/abilities";
   import type {DnDBackground} from "$lib/srdData/backgrounds";
 
   let selectedClass: DnDClass | undefined;
