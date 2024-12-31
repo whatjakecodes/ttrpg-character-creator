@@ -17,19 +17,23 @@
     onSkillsChange
   }: CharacterCreatorFormProps = $props();
 
-  let backgroundSkills: DnDSkillName[] = [];
-
   const handleClassChange = (classIndex: string) => {
     const selectedClass = classes.findLast(c => c.index === classIndex);
     onCharacterClassChange(selectedClass!);
+
+    const selectedBackground = backgrounds.findLast(b => b.index === background?.index);
+    if (selectedBackground) {
+      onSkillsChange([...selectedBackground.starting_skill_proficiencies]);
+    }
   }
 
   const handleBackgroundChange = (backgroundIndex: string) => {
     const selectedBackground = backgrounds.findLast(b => b.index === backgroundIndex);
-    backgroundSkills = selectedBackground!.starting_skill_proficiencies;
-    onBackgroundChange(selectedBackground!);
-    const newSkills = [...backgroundSkills];
-    onSkillsChange(newSkills);
+    if (selectedBackground) {
+      const backgroundSkills = selectedBackground.starting_skill_proficiencies;
+      onBackgroundChange(selectedBackground!);
+      onSkillsChange([...backgroundSkills]);
+    }
   }
 
   function getSkillChoiceOptions(forClass: DnDClass): { name: string, index: string }[] {
@@ -48,8 +52,14 @@
     const classSkills = getSkillChoiceOptions(characterClass!)
       .filter(s => skillIndices.includes(s.index))
       .map(s => s.name) as DnDSkillName[];
+
+    const selectedBackground = backgrounds.findLast(b => b.index === background?.index);
+    const newSkills: DnDSkillName[] = [];
+    if (selectedBackground) {
+      newSkills.push(...(selectedBackground.starting_skill_proficiencies));
+    }
     
-    const newSkills = [...backgroundSkills, ...classSkills];
+    newSkills.push(...classSkills);
     onSkillsChange(newSkills);
   }
 </script>

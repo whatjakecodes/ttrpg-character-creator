@@ -11,7 +11,7 @@ import {
 } from "$lib/stores/dnd5eStore/__tests__/testDataUtil";
 import type {DnDSkillName} from "$lib/srdData/skills";
 
-async function selectClass<T>(user: UserEvent, className: string) {
+async function selectClass(user: UserEvent, className: string) {
   const classSelect = screen.getByRole('combobox', {name: 'Pick a 5e Character Class'});
   await user.click(classSelect);
   await user.selectOptions(classSelect, className);
@@ -21,6 +21,11 @@ async function selectBackground(user: UserEvent, background: string) {
   const select = screen.getByRole('combobox', {name: 'Pick a 5e Background'});
   await user.click(select);
   await user.selectOptions(select, background);
+}
+
+async function selectClassSkill(user: UserEvent, skillName: DnDSkillName) {
+  const classSkills = within(screen.getByLabelText('Choose Class Skills:'));
+  await user.click(classSkills.getByRole('button', {name: skillName}));
 }
 
 describe("main page", () => {
@@ -34,7 +39,14 @@ describe("main page", () => {
   });
 
   it('should show background options after class is selected', async () => {
-    setupCharacterClasses();
+    setupCharacterClasses([
+      createDndClass({
+        name: 'TestClass2Name',
+        index: 'testClass2index',
+        skill_proficiency_choices: createSkillProficiencyChoices("TSkill1", "TSkill2"),
+        saving_throws: createSavingThrowProficiencies("WIS", "CHA")
+      })
+    ]);
 
     const user = userEvent.setup();
     const subject = render(HomePage);
@@ -69,13 +81,13 @@ describe("main page", () => {
     await selectClass(user, 'TestClass2Name');
     expect(screen.queryByLabelText('Choose Class Skills:')).not.toBeInTheDocument();
     expect(subject.queryByText('Background Skills:')).not.toBeInTheDocument();
-    
+
     await selectBackground(user, 'Acolyte'); // skills: Insight, Religion
 
     expect(screen.getByLabelText('Choose Class Skills:')).toBeInTheDocument();
     expect(subject.getByText('Selected Skills: Insight, Religion')).toBeInTheDocument();
     expect(subject.getByText('Background Skills:')).toBeInTheDocument();
-    
+
     const backgroundSkill1Button = subject.getByRole('button', {name: 'Insight'});
     expect(backgroundSkill1Button).toBeInTheDocument();
     expect(backgroundSkill1Button).toBeDisabled();
@@ -83,7 +95,7 @@ describe("main page", () => {
     expect(backgroundSkill2Button).toBeInTheDocument();
     expect(backgroundSkill2Button).toBeDisabled();
 
-    await user.click(screen.getByRole('button', {name: 'Sleight of Hand'}));
+    await selectClassSkill(user, 'Sleight of Hand');
 
     expect(subject.getByText('Selected Skills: Insight, Religion, Sleight of Hand')).toBeInTheDocument();
   });
@@ -109,6 +121,35 @@ describe("main page", () => {
     expect(subject.getByText('Selected Skills: Athletics, Intimidation')).toBeInTheDocument();
   });
 
+  it('should reset selected class skills when class changes', async () => {
+    setupCharacterClasses([
+      createDndClass({
+        name: 'TestClass1',
+        index: 'testClass1index',
+        skill_proficiency_choices: createSkillProficiencyChoices("Sleight of Hand"),
+      }),
+      createDndClass({
+        name: 'TestClass2',
+        index: 'testClass2index',
+        skill_proficiency_choices: createSkillProficiencyChoices("Nature"),
+      })
+    ]);
+
+    const user = userEvent.setup();
+    render(HomePage);
+
+    await dndSRDStore.fetchClasses();
+
+    await selectClass(user, 'TestClass1');
+    await selectBackground(user, 'Acolyte');
+    await selectClassSkill(user, 'Sleight of Hand');
+    expect(screen.getByText('Selected Skills: Insight, Religion, Sleight of Hand')).toBeInTheDocument();
+
+    await selectClass(user, 'TestClass2');
+    expect(screen.queryByText('Selected Skills: Insight, Religion, Sleight of Hand')).not.toBeInTheDocument();
+    expect(screen.getByText('Selected Skills: Insight, Religion')).toBeInTheDocument();
+  });
+
   it('should show species options', () => {
     // dwarf, elf, halfling, human
   });
@@ -118,7 +159,14 @@ describe("main page", () => {
     // weapon proficiencies,
     // armor training, 
     // starting equipment choices
-    setupCharacterClasses();
+    setupCharacterClasses([
+      createDndClass({
+        name: 'TestClass2Name',
+        index: 'testClass2index',
+        skill_proficiency_choices: createSkillProficiencyChoices("TSkill1", "TSkill2"),
+        saving_throws: createSavingThrowProficiencies("WIS", "CHA")
+      })
+    ]);
 
     const user = userEvent.setup();
     const subject = render(HomePage);
@@ -141,22 +189,12 @@ function setupCharacterClassWithSkills(skills: DnDSkillName[]) {
       saving_throws: createSavingThrowProficiencies("WIS", "CHA")
     })
   ];
-  const mockFetch = vi.fn().mockResolvedValue({
-    ok: true,
-    json: () => Promise.resolve(testData)
-  })
-  vi.stubGlobal('fetch', mockFetch);
+
+  setupCharacterClasses(testData);
 }
 
-function setupCharacterClasses() {
-  const testData: DnDClass[] = [
-    createDndClass({
-      name: 'TestClass2Name',
-      index: 'testClass2index',
-      skill_proficiency_choices: createSkillProficiencyChoices("TSkill1", "TSkill2"),
-      saving_throws: createSavingThrowProficiencies("WIS", "CHA")
-    })
-  ];
+function setupCharacterClasses(dndClasses: DnDClass[]) {
+  const testData: DnDClass[] = dndClasses;
   const mockFetch = vi.fn().mockResolvedValue({
     ok: true,
     json: () => Promise.resolve(testData)
