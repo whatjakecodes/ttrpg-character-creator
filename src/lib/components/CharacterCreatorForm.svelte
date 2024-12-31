@@ -3,12 +3,7 @@
   import ClassSelect from "$lib/components/ClassSelect.svelte";
   import ClassSkillChooser from "$lib/components/ClassSkillChooser.svelte";
   import type {DnDClass} from "$lib/DnDClassSchema";
-
-  interface CharacterCreatorFormProps {
-    classes: DnDClass[];
-    characterClass: DnDClass | undefined;
-    onCharacterClassChange: (newClass: DnDClass) => void;
-  }
+  import type {CharacterCreatorFormProps} from "$lib/components/types";
 
   const {classes, characterClass, onCharacterClassChange}: CharacterCreatorFormProps = $props();
 
@@ -40,6 +35,11 @@
         value={characterClass?.index}
         change={handleClassChange}
 />
+<!--<BackgroundSelect-->
+<!--        options={backgrounds}-->
+<!--        value={background?.index}-->
+<!--        change={handleBackgroundChange}-->
+<!--/>-->
 {#if characterClass}
     <ClassSkillChooser
             options={getSkillChoiceOptions(characterClass)}
