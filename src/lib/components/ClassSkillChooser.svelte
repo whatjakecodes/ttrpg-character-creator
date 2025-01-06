@@ -1,13 +1,15 @@
 ﻿<script lang="ts">
   import type {DnDSkillName} from "$lib/srdData/skills";
+  import type {DnDClass} from "$lib/DnDClassSchema";
 
   type ButtonOption = {
     name: string;
     index: string;
   }
 
-  let {options, onChange, backgroundSkills} = $props<{
+  let {options, characterClass, onChange, backgroundSkills} = $props<{
     options: ButtonOption[];
+    characterClass: DnDClass,
     backgroundSkills: DnDSkillName[],
     onChange: (selectedIndices: string[]) => void;
   }>();
@@ -23,7 +25,7 @@
   }
 </script>
 
-<label for="choose-skills" id="choose-skills-label" class="text-sm font-medium text-gray-700">Choose Class Skills:</label>
+<label for="choose-skills" id="choose-skills-label" class="text-sm font-medium text-gray-700">Choose 2 {characterClass.name} Class Skills:</label>
 <div role="group" id="choose-skills" aria-labelledby="choose-skills-label" class="flex flex-wrap gap-4 p-4">
     {#each options as {name, index}}
         <button

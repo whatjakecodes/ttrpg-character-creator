@@ -23,8 +23,8 @@ async function selectBackground(user: UserEvent, background: string) {
   await user.selectOptions(select, background);
 }
 
-async function selectClassSkill(user: UserEvent, skillName: DnDSkillName) {
-  const classSkills = within(screen.getByLabelText('Choose Class Skills:'));
+async function selectClassSkill(user: UserEvent, className: string, skillName: DnDSkillName) {
+  const classSkills = within(screen.getByLabelText(`Choose 2 ${className} Class Skills:`));
   await user.click(classSkills.getByRole('button', {name: skillName}));
 }
 
@@ -76,17 +76,17 @@ describe("main page", () => {
 
     await dndSRDStore.fetchClasses();
 
-    expect(screen.queryByLabelText('Choose Class Skills:')).not.toBeInTheDocument();
-    expect(subject.queryByText('Background Skills:')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Class Skills/)).not.toBeInTheDocument();
+    expect(subject.queryByText(/Background Skills:/)).not.toBeInTheDocument();
     await selectClass(user, 'TestClass2Name');
-    expect(screen.queryByLabelText('Choose Class Skills:')).not.toBeInTheDocument();
-    expect(subject.queryByText('Background Skills:')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Class Skills/)).not.toBeInTheDocument();
+    expect(subject.queryByText(/Background Skills:/)).not.toBeInTheDocument();
 
     await selectBackground(user, 'Acolyte'); // skills: Insight, Religion
 
-    expect(screen.getByLabelText('Choose Class Skills:')).toBeInTheDocument();
+    expect(screen.getByLabelText('Choose 2 TestClass2Name Class Skills:')).toBeInTheDocument();
     expect(subject.getByText('Selected Skills: Insight, Religion')).toBeInTheDocument();
-    expect(subject.getByText('Background Skills:')).toBeInTheDocument();
+    expect(subject.getByText('Acolyte Background Skills:')).toBeInTheDocument();
 
     const backgroundSkill1Button = subject.getByRole('button', {name: 'Insight'});
     expect(backgroundSkill1Button).toBeInTheDocument();
@@ -95,7 +95,7 @@ describe("main page", () => {
     expect(backgroundSkill2Button).toBeInTheDocument();
     expect(backgroundSkill2Button).toBeDisabled();
 
-    await selectClassSkill(user, 'Sleight of Hand');
+    await selectClassSkill(user, 'TestClass2Name', 'Sleight of Hand');
 
     expect(subject.getByText('Selected Skills: Insight, Religion, Sleight of Hand')).toBeInTheDocument();
   });
@@ -113,7 +113,7 @@ describe("main page", () => {
 
     expect(subject.getByText('Selected Skills: Athletics, Intimidation')).toBeInTheDocument();
 
-    const classSkillButtonGroup = within(screen.getByLabelText('Choose Class Skills:'));
+    const classSkillButtonGroup = within(screen.getByLabelText('Choose 2 TestClass2Name Class Skills:'));
     expect(classSkillButtonGroup.getByRole('button', {name: 'Intimidation'})).toBeDisabled();
 
     await user.click(classSkillButtonGroup.getByRole('button', {name: 'Intimidation'}));

@@ -80,6 +80,7 @@
 
 {#if background && characterClass}
     <ClassSkillChooser
+            characterClass={characterClass}
             options={getSkillChoiceOptions(characterClass)}
             backgroundSkills={background.starting_skill_proficiencies}
             onChange={handleSkillChoiceChange}

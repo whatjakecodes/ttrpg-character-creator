@@ -36,7 +36,7 @@
     {#if selected}
         <label for="background-skills"
                id="background-skills-label"
-               class="text-sm font-medium text-gray-700">Background Skills:</label>
+               class="text-sm font-medium text-gray-700">{selected.name} Background Skills:</label>
         <div role="group" id="background-skills" aria-labelledby="background-skills-label"
              class="flex flex-wrap gap-4 p-4">
             {#each selected.starting_skill_proficiencies as skill}
