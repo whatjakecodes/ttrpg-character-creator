@@ -71,6 +71,7 @@
             <button
                     onclick={() => onToggleClassSkill(skillName)}
                     disabled={backgroundSkills.includes(skillName)}
+                    aria-pressed={allActiveSkills.has(skillName)}
                     class="px-4 py-2 rounded-lg font-medium transition-all duration-200 disabled:bg-blue-300
                             {allActiveSkills.has(skillName) ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">
                 {skillName}
