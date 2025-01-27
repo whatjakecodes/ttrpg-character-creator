@@ -8,10 +8,12 @@
   import Label from "$lib/components/common/Label.svelte";
 
   const {
+    characterName,
     classes,
     characterClass,
     background,
     selectedClassSkills,
+    onCharacterNameChange,
     onCharacterClassChange,
     onBackgroundChange,
     onClassSkillsChange
@@ -50,18 +52,35 @@
   const allActiveSkills = $derived(new Set<DnDSkillName>([...backgroundSkills, ...selectedClassSkills]));
 </script>
 
-<ClassSelect
-        options={classes}
-        value={characterClass?.index}
-        change={handleClassChange}
-/>
+<div class="flex flex-col gap-2">
+    <label for="char-name" class="text-sm font-medium text-gray-700">
+        Character Name
+    </label>
+    <input
+            id="char-name"
+            type="text"
+            class="rounded-lg border-gray-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            value={characterName}
+            oninput={e => onCharacterNameChange(e.currentTarget.value)}
+    />
+</div>
+
+<div class="flex flex-col gap-2">
+    <ClassSelect
+            options={classes}
+            value={characterClass?.index}
+            change={handleClassChange}
+    />
+</div>
 
 {#if characterClass}
-    <BackgroundSelect
-            options={backgrounds}
-            value={background?.index}
-            onChange={handleBackgroundChange}
-    />
+    <div class="flex flex-col gap-2">
+        <BackgroundSelect
+                options={backgrounds}
+                value={background?.index}
+                onChange={handleBackgroundChange}
+        />
+    </div>
 {/if}
 
 {#if background && characterClass}
@@ -78,6 +97,5 @@
             </button>
         {/each}
     </div>
-
 {/if}
     

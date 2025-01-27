@@ -7,9 +7,14 @@
   import type {DnDBackground} from "$lib/srdData/backgrounds";
   import type {DnDSkillName} from "$lib/srdData/skills";
 
+  let characterName = $state<string>('');
   let selectedClass = $state<DnDClass>();
   let selectedBackground = $state<DnDBackground>();
   let selectedClassSkills = $state<DnDSkillName[]>([]);
+
+  const handleCharacterNameChange = (newName: string) => {
+    characterName = newName;
+  };
 
   const handleCharacterClassChange = (newClass: DnDClass) => {
     selectedClass = newClass;
@@ -41,16 +46,11 @@
                 <h1 class="text-3xl font-bold mb-8 text-gray-800">Create a D&D Character</h1>
 
                 <div class="space-y-6">
-                    <div class="flex flex-col gap-2">
-                        <label for="char-name" class="text-sm font-medium text-gray-700">
-                            Character Name
-                        </label>
-                        <input
-                                id="char-name"
-                                type="text"
-                                class="rounded-lg border-gray-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                    </div>
+                    {#if characterName}
+                        <div class="flex flex-col gap-2">
+                            <p>Name: {characterName}</p>
+                        </div>
+                    {/if}
 
                     {#if selectedClass}
                         <div class="flex flex-col gap-2">
@@ -81,10 +81,12 @@
                         <div class="text-red-600">{$dndSRDStore.error}</div>
                     {:else}
                         <CharacterCreatorForm
+                                characterName={characterName}
                                 classes={$dndSRDStore.characterCreator.getClassList()}
                                 characterClass={selectedClass}
                                 background={selectedBackground}
                                 selectedClassSkills={selectedClassSkills}
+                                onCharacterNameChange={handleCharacterNameChange}
                                 onCharacterClassChange={handleCharacterClassChange}
                                 onBackgroundChange={handleBackgroundChange}
                                 onClassSkillsChange={handleClassSkillsChange}
