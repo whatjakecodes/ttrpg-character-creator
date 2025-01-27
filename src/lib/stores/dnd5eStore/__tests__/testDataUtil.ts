@@ -1,5 +1,6 @@
-﻿import type {APIReference, ChoiceOption, ChoiceSet, DnDAbility, DnDClass} from "$lib/DnDClassSchema";
+﻿import type {APIReference, ChoiceOption, ChoiceSet, DnDClass} from "$lib/DnDClassSchema";
 import v from 'voca';
+import type {DnDAbility} from "$lib/srdData/abilities";
 
 export function createDndClass(options?: Partial<DnDClass>): DnDClass {
   return {

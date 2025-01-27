@@ -6,7 +6,8 @@ export interface CharacterCreatorFormProps {
   classes: DnDClass[];
   characterClass: DnDClass | undefined;
   background: DnDBackground | undefined;
+  selectedClassSkills: DnDSkillName[];
   onCharacterClassChange: (newClass: DnDClass) => void;
   onBackgroundChange: (newBackground: DnDBackground) => void;
-  onSkillsChange: (newSkills: DnDSkillName[]) => void;
+  onClassSkillsChange: (newSkills: DnDSkillName[]) => void;
 }

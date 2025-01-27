@@ -7,26 +7,29 @@
   import type {DnDBackground} from "$lib/srdData/backgrounds";
   import type {DnDSkillName} from "$lib/srdData/skills";
 
-  let selectedClass: DnDClass | undefined;
-  let selectedBackground: DnDBackground | undefined;
-  let selectedSkills: DnDSkillName[] = [];
+  let selectedClass = $state<DnDClass>();
+  let selectedBackground = $state<DnDBackground>();
+  let selectedClassSkills = $state<DnDSkillName[]>([]);
 
   const handleCharacterClassChange = (newClass: DnDClass) => {
     selectedClass = newClass;
+    selectedClassSkills = [];
   };
 
   const handleBackgroundChange = (newBackground: DnDBackground) => {
     selectedBackground = newBackground;
   };
 
-  const handleSkillsChange = (newSkills: DnDSkillName[]) => {
-    selectedSkills = newSkills;
+  const handleClassSkillsChange = (newSkills: DnDSkillName[]) => {
+    selectedClassSkills = newSkills;
   };
 
   function getSavingThrowProficiencies(forClass: DnDClass): string {
     return forClass.saving_throws.map(st => presentDnDAbility(st.name as DnDAbility)).join(", ");
   }
 
+  const backgroundSkills: DnDSkillName[] = $derived(selectedBackground ? selectedBackground.starting_skill_proficiencies : []);
+  const selectedSkills: DnDSkillName[] = $derived(Array.from(new Set([...backgroundSkills, ...selectedClassSkills])));
 </script>
 
 <div class="min-h-screen p-4 md:p-8 bg-gray-50">
@@ -81,9 +84,10 @@
                                 classes={$dndSRDStore.characterCreator.getClassList()}
                                 characterClass={selectedClass}
                                 background={selectedBackground}
+                                selectedClassSkills={selectedClassSkills}
                                 onCharacterClassChange={handleCharacterClassChange}
                                 onBackgroundChange={handleBackgroundChange}
-                                onSkillsChange={handleSkillsChange}
+                                onClassSkillsChange={handleClassSkillsChange}
                         />
                     {/if}
 

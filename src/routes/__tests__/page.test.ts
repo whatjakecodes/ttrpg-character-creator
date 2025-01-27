@@ -1,7 +1,7 @@
 ﻿import {describe, expect, it, vi} from "vitest";
 import HomePage from '../+page.svelte';
 import {render, screen, within} from "@testing-library/svelte";
-import {type UserEvent, userEvent} from "@testing-library/user-event";
+import {userEvent} from "@testing-library/user-event";
 import {dndSRDStore} from "$lib/stores/dnd5eStore";
 import type {DnDClass} from "$lib/DnDClassSchema";
 import {
@@ -10,23 +10,7 @@ import {
   createSkillProficiencyChoices
 } from "$lib/stores/dnd5eStore/__tests__/testDataUtil";
 import type {DnDSkillName} from "$lib/srdData/skills";
-
-async function selectClass(user: UserEvent, className: string) {
-  const classSelect = screen.getByRole('combobox', {name: 'Pick a 5e Character Class'});
-  await user.click(classSelect);
-  await user.selectOptions(classSelect, className);
-}
-
-async function selectBackground(user: UserEvent, background: string) {
-  const select = screen.getByRole('combobox', {name: 'Pick a 5e Background'});
-  await user.click(select);
-  await user.selectOptions(select, background);
-}
-
-async function selectClassSkill(user: UserEvent, className: string, skillName: DnDSkillName) {
-  const classSkills = within(screen.getByLabelText(`Choose 2 ${className} Class Skills:`));
-  await user.click(classSkills.getByRole('button', {name: skillName}));
-}
+import {selectBackground, selectClass, selectClassSkill} from "../../__tests__/utils";
 
 describe("main page", () => {
   it('should render', () => {
@@ -126,12 +110,12 @@ describe("main page", () => {
       createDndClass({
         name: 'TestClass1',
         index: 'testClass1index',
-        skill_proficiency_choices: createSkillProficiencyChoices("Sleight of Hand"),
+        skill_proficiency_choices: createSkillProficiencyChoices("Sleight of Hand", "Nature"),
       }),
       createDndClass({
         name: 'TestClass2',
         index: 'testClass2index',
-        skill_proficiency_choices: createSkillProficiencyChoices("Nature"),
+        skill_proficiency_choices: createSkillProficiencyChoices("Nature", "Acrobatics"),
       })
     ]);
 
@@ -142,11 +126,13 @@ describe("main page", () => {
 
     await selectClass(user, 'TestClass1');
     await selectBackground(user, 'Acolyte');
-    await selectClassSkill(user, 'Sleight of Hand');
-    expect(screen.getByText('Selected Skills: Insight, Religion, Sleight of Hand')).toBeInTheDocument();
+    expect(screen.getByText('Selected Skills: Insight, Religion')).toBeInTheDocument();
+
+    await selectClassSkill(user, 'TestClass1', 'Sleight of Hand');
+    await selectClassSkill(user, 'TestClass1', 'Nature');
+    expect(screen.getByText('Selected Skills: Insight, Religion, Sleight of Hand, Nature')).toBeInTheDocument();
 
     await selectClass(user, 'TestClass2');
-    expect(screen.queryByText('Selected Skills: Insight, Religion, Sleight of Hand')).not.toBeInTheDocument();
     expect(screen.getByText('Selected Skills: Insight, Religion')).toBeInTheDocument();
   });
 

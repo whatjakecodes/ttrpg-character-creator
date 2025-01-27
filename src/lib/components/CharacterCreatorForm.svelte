@@ -1,67 +1,53 @@
 ﻿<script lang="ts">
-
   import ClassSelect from "$lib/components/ClassSelect.svelte";
-  import ClassSkillChooser from "$lib/components/ClassSkillChooser.svelte";
   import type {DnDClass} from "$lib/DnDClassSchema";
   import type {CharacterCreatorFormProps} from "$lib/components/types";
   import {backgrounds} from "$lib/srdData/backgrounds";
   import BackgroundSelect from "$lib/components/BackgroundSelect.svelte";
   import type {DnDSkillName} from "$lib/srdData/skills";
+  import Label from "$lib/components/common/Label.svelte";
 
   const {
     classes,
     characterClass,
     background,
+    selectedClassSkills,
     onCharacterClassChange,
     onBackgroundChange,
-    onSkillsChange
+    onClassSkillsChange
   }: CharacterCreatorFormProps = $props();
 
   const handleClassChange = (classIndex: string) => {
     const selectedClass = classes.findLast(c => c.index === classIndex);
     onCharacterClassChange(selectedClass!);
-
-    const selectedBackground = backgrounds.findLast(b => b.index === background?.index);
-    if (selectedBackground) {
-      onSkillsChange([...selectedBackground.starting_skill_proficiencies]);
-    }
   }
 
   const handleBackgroundChange = (backgroundIndex: string) => {
     const selectedBackground = backgrounds.findLast(b => b.index === backgroundIndex);
     if (selectedBackground) {
-      const backgroundSkills = selectedBackground.starting_skill_proficiencies;
       onBackgroundChange(selectedBackground!);
-      onSkillsChange([...backgroundSkills]);
     }
   }
 
-  function getSkillChoiceOptions(forClass: DnDClass): { name: string, index: string }[] {
+  function getSkillChoiceOptions(forClass: DnDClass): DnDSkillName[] {
     return forClass.skill_proficiency_choices
-      .flatMap(c => c.from.options)
-      .filter(o => o.item != undefined)
-      .map(o => {
-        return {
-          name: o.item!.name.replace('Skill: ', ''),
-          index: o.item!.index
-        }
-      });
+        .flatMap(c => c.from.options)
+        .filter(o => o.item != undefined)
+        .map(o => {
+          return o.item!.name.replace('Skill: ', '') as DnDSkillName
+        });
   }
 
-  const handleSkillChoiceChange = (skillIndices: string[]) => {
-    const classSkills = getSkillChoiceOptions(characterClass!)
-      .filter(s => skillIndices.includes(s.index))
-      .map(s => s.name) as DnDSkillName[];
-
-    const selectedBackground = backgrounds.findLast(b => b.index === background?.index);
-    const newSkills: DnDSkillName[] = [];
-    if (selectedBackground) {
-      newSkills.push(...(selectedBackground.starting_skill_proficiencies));
-    }
-    
-    newSkills.push(...classSkills);
-    onSkillsChange(newSkills);
+  function onToggleClassSkill(skill: DnDSkillName): void {
+    const newClassSkills = selectedClassSkills.includes(skill)
+        ? new Set([...selectedClassSkills].filter(x => x !== skill))
+        : new Set([...selectedClassSkills, skill].slice(-2));
+    onClassSkillsChange(Array.from(newClassSkills));
   }
+
+  const classSkillChoices = $derived(characterClass ? getSkillChoiceOptions(characterClass) : []);
+  const backgroundSkills = $derived(background ? background.starting_skill_proficiencies : []);
+  const allActiveSkills = $derived(new Set<DnDSkillName>([...backgroundSkills, ...selectedClassSkills]));
 </script>
 
 <ClassSelect
@@ -79,11 +65,18 @@
 {/if}
 
 {#if background && characterClass}
-    <ClassSkillChooser
-            characterClass={characterClass}
-            options={getSkillChoiceOptions(characterClass)}
-            backgroundSkills={background.starting_skill_proficiencies}
-            onChange={handleSkillChoiceChange}
-    />
+    <Label for="choose-skills" id="choose-skills-label" text="Choose 2 {characterClass.name} Class Skills:"/>
+    <div role="group" id="choose-skills" aria-labelledby="choose-skills-label" class="flex flex-wrap gap-4 p-4">
+        {#each classSkillChoices as skillName}
+            <button
+                    onclick={() => onToggleClassSkill(skillName)}
+                    disabled={backgroundSkills.includes(skillName)}
+                    class="px-4 py-2 rounded-lg font-medium transition-all duration-200 disabled:bg-blue-300
+                            {allActiveSkills.has(skillName) ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">
+                {skillName}
+            </button>
+        {/each}
+    </div>
+
 {/if}
     
