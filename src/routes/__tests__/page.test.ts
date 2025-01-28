@@ -49,7 +49,7 @@ describe("main page", () => {
     await selectBackground(user, 'Sage');
     await selectBackground(user, 'Soldier');
 
-    expect(subject.getByText('Selected Background: Soldier')).toBeInTheDocument();
+    expect(subject.getByRole('textbox', {name: 'BACKGROUND'})).toHaveValue('Soldier');
   });
 
   it('should show skill proficiencies after background is selected', async () => {
@@ -161,7 +161,7 @@ describe("main page", () => {
 
     await selectClass(user, 'TestClass2Name');
 
-    expect(subject.getByText('Selected Class: TestClass2Name')).toBeInTheDocument();
+    expect(subject.getByRole('textbox', {name: 'CLASS'})).toHaveValue('TestClass2Name');
     expect(subject.getByText('Saving Throw Proficiencies: Wisdom, Charisma')).toBeInTheDocument();
   });
 });

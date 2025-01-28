@@ -52,7 +52,7 @@
   const allActiveSkills = $derived(new Set<DnDSkillName>([...backgroundSkills, ...selectedClassSkills]));
 </script>
 
-<div class="flex flex-col gap-2">
+<div class="flex flex-col gap-2 mb-2">
     <label for="char-name" class="text-sm font-medium text-gray-700">
         Character Name
     </label>
@@ -61,11 +61,12 @@
             type="text"
             class="rounded-lg border-gray-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             value={characterName}
+            autocomplete="off"
             oninput={e => onCharacterNameChange(e.currentTarget.value)}
     />
 </div>
 
-<div class="flex flex-col gap-2">
+<div class="flex flex-col gap-2 mb-2">
     <ClassSelect
             options={classes}
             value={characterClass?.index}
@@ -74,7 +75,7 @@
 </div>
 
 {#if characterClass}
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-2 mb-2">
         <BackgroundSelect
                 options={backgrounds}
                 value={background?.index}
@@ -85,7 +86,7 @@
 
 {#if background && characterClass}
     <Label for="choose-skills" id="choose-skills-label" text="Choose 2 {characterClass.name} Class Skills:"/>
-    <div role="group" id="choose-skills" aria-labelledby="choose-skills-label" class="flex flex-wrap gap-4 p-4">
+    <div role="group" id="choose-skills" aria-labelledby="choose-skills-label" class="flex flex-wrap gap-4 p-4 mb-2">
         {#each classSkillChoices as skillName}
             <button
                     onclick={() => onToggleClassSkill(skillName)}
