@@ -6,16 +6,19 @@
   import BackgroundSelect from "$lib/components/BackgroundSelect.svelte";
   import type {DnDSkillName} from "$lib/srdData/skills";
   import Label from "$lib/components/common/Label.svelte";
+  import {species} from "$lib/srdData/species";
 
   const {
     characterName,
     classes,
     characterClass,
     background,
+    selectedSpecies,
     selectedClassSkills,
     onCharacterNameChange,
     onCharacterClassChange,
     onBackgroundChange,
+    onSpeciesChange,
     onClassSkillsChange
   }: CharacterCreatorFormProps = $props();
 
@@ -50,6 +53,7 @@
   const classSkillChoices = $derived(characterClass ? getSkillChoiceOptions(characterClass) : []);
   const backgroundSkills = $derived(background ? background.starting_skill_proficiencies : []);
   const allActiveSkills = $derived(new Set<DnDSkillName>([...backgroundSkills, ...selectedClassSkills]));
+  const selectedSpeciesIndex = $derived(selectedSpecies?.index) as string;
 </script>
 
 <div class="flex flex-col gap-2 mb-2">
@@ -75,6 +79,30 @@
 </div>
 
 {#if characterClass}
+    <div class="flex flex-col gap-2 mb-2">
+        <label
+                for="species-select"
+                class="text-sm font-medium text-gray-700"
+        >
+            Select a species
+        </label>
+        <select
+                id="species-select"
+                value={selectedSpeciesIndex}
+                class="rounded-lg border-gray-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                onchange={(e) => {
+                    const specie = species.find(s => s.index === e.currentTarget.value);
+                    if (specie) {
+                        onSpeciesChange(specie);
+                    } else console.error(`Invalid species: ${e.currentTarget.value}`);
+                }}
+        >
+            <option value={undefined} disabled>Select a species...</option>
+            {#each species as specie}
+                <option value={specie.index}>{specie.name}</option>
+            {/each}
+        </select>
+    </div>
     <div class="flex flex-col gap-2 mb-2">
         <BackgroundSelect
                 options={backgrounds}

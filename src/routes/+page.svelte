@@ -7,10 +7,12 @@
   import type {DnDBackground} from "$lib/srdData/backgrounds";
   import type {DnDSkillName} from "$lib/srdData/skills";
   import ReadonlyInput from "$lib/components/common/ReadonlyInput.svelte";
+  import type {DnDSpecies} from "$lib/srdData/species";
 
   let characterName = $state<string>('');
   let selectedClass = $state<DnDClass>();
   let selectedBackground = $state<DnDBackground>();
+  let selectedSpecies = $state<DnDSpecies>();
   let selectedClassSkills = $state<DnDSkillName[]>([]);
 
   const handleCharacterNameChange = (newName: string) => {
@@ -24,6 +26,11 @@
 
   const handleBackgroundChange = (newBackground: DnDBackground) => {
     selectedBackground = newBackground;
+  };
+
+  const handleSpeciesChange = (newSpecies: DnDSpecies) => {
+    console.log({newSpecies, selectedSpecies})
+    selectedSpecies = newSpecies;
   };
 
   const handleClassSkillsChange = (newSkills: DnDSkillName[]) => {
@@ -55,10 +62,12 @@
                                 classes={$dndSRDStore.characterCreator.getClassList()}
                                 characterClass={selectedClass}
                                 background={selectedBackground}
+                                selectedSpecies={selectedSpecies}
                                 selectedClassSkills={selectedClassSkills}
                                 onCharacterNameChange={handleCharacterNameChange}
                                 onCharacterClassChange={handleCharacterClassChange}
                                 onBackgroundChange={handleBackgroundChange}
+                                onSpeciesChange={handleSpeciesChange}
                                 onClassSkillsChange={handleClassSkillsChange}
                         />
                     {/if}
@@ -81,7 +90,8 @@
                     <div class="flex flex-col lg:flex-row lg:items-stretch gap-2">
                         <div class="w-full lg:w-1/2">
                             <div class="flex-col gap-1">
-                                <ReadonlyInput inputId="backgroundId" value={selectedBackground?.name} labelText="Background"/>
+                                <ReadonlyInput inputId="backgroundId" value={selectedBackground?.name}
+                                               labelText="Background"/>
                             </div>
                         </div>
                         <div class="w-full lg:w-1/2">
@@ -94,7 +104,7 @@
                     <div class="flex flex-col lg:flex-row lg:items-stretch gap-2">
                         <div class="w-full lg:w-1/2">
                             <div class="flex-col gap-1">
-                                <ReadonlyInput value={""} labelText="Species"/>
+                                <ReadonlyInput inputId="speciesId" value={selectedSpecies?.name} labelText="Species"/>
                             </div>
                         </div>
                         <div class="w-full lg:w-1/2">

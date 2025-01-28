@@ -10,7 +10,7 @@ import {
   createSkillProficiencyChoices
 } from "$lib/stores/dnd5eStore/__tests__/testDataUtil";
 import type {DnDSkillName} from "$lib/srdData/skills";
-import {selectBackground, selectClass, selectClassSkill} from "../../__tests__/utils";
+import {selectBackground, selectClass, selectClassSkill, selectSpecies} from "../../__tests__/utils";
 
 describe("main page", () => {
   it('should render', () => {
@@ -136,8 +136,41 @@ describe("main page", () => {
     expect(screen.getByText('Selected Skills: Insight, Religion')).toBeInTheDocument();
   });
 
-  it('should show species options', () => {
-    // dwarf, elf, halfling, human
+  it('should show species options', async () => {
+    setupCharacterClasses([
+      createDndClass({
+        name: 'TestClass1',
+        index: 'testClass1index',
+        skill_proficiency_choices: createSkillProficiencyChoices(),
+      })
+    ]);
+
+    const user = userEvent.setup();
+    render(HomePage);
+
+    await dndSRDStore.fetchClasses();
+
+    expect(screen.getByRole('textbox', {name: 'SPECIES'})).toHaveValue('');
+    expect(screen.queryByText('Select a species')).not.toBeInTheDocument();
+
+    await selectClass(user, 'TestClass1');
+
+    const speciesSelect = screen.getByRole('combobox', {name: 'Select a species'});
+    expect(speciesSelect).toBeInTheDocument();
+    const defaultOption = within(speciesSelect).getByRole('option', {selected: true});
+    expect(defaultOption.textContent).toEqual("Select a species...");
+
+    await selectSpecies(user, 'Dwarf');
+    expect(screen.getByRole('textbox', {name: 'SPECIES'})).toHaveValue('Dwarf');
+
+    await selectSpecies(user, 'Elf');
+    expect(screen.getByRole('textbox', {name: 'SPECIES'})).toHaveValue('Elf');
+
+    await selectSpecies(user, 'Halfling');
+    expect(screen.getByRole('textbox', {name: 'SPECIES'})).toHaveValue('Halfling');
+
+    await selectSpecies(user, 'Human');
+    expect(screen.getByRole('textbox', {name: 'SPECIES'})).toHaveValue('Human');
   });
 
   it('should show selected class traits', async () => {
