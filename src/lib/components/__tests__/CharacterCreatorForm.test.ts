@@ -1,14 +1,16 @@
-﻿import {expect, it, test, vi} from "vitest";
+﻿import {expect, test} from "vitest";
 import {render, screen, within} from "@testing-library/svelte";
 import CharacterCreatorForm from "$lib/components/CharacterCreatorForm.svelte";
 import type {CharacterCreatorFormProps} from "$lib/components/types";
-import {createDndClass, createSkillProficiencyChoices} from "$lib/stores/dnd5eStore/__tests__/testDataUtil";
-import {userEvent} from "@testing-library/user-event";
-import {selectBackground, selectClass, selectClassSkill} from "../../../__tests__/utils";
-import type {DnDBackground} from "$lib/srdData/backgrounds";
+import {createDndClass} from "$lib/stores/dnd5eStore/__tests__/testDataUtil";
+
+function NO_OP() {
+}
 
 test('shows class list', () => {
   const props: CharacterCreatorFormProps = {
+    characterName: "test-character-name",
+    onCharacterNameChange: NO_OP,
     classes: [
       createDndClass({name: 'testClass1', index: 'testClass1index'}),
       createDndClass({name: 'testClass2', index: 'testClass2index'})
@@ -16,12 +18,9 @@ test('shows class list', () => {
     background: undefined,
     characterClass: undefined,
     selectedClassSkills: [],
-    onCharacterClassChange: () => {
-    },
-    onBackgroundChange: newBackground => {
-    },
-    onClassSkillsChange: newSkills => {
-    },
+    onCharacterClassChange: NO_OP,
+    onBackgroundChange: NO_OP,
+    onClassSkillsChange: NO_OP,
   };
 
   render(CharacterCreatorForm, props);
