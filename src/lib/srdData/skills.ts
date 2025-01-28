@@ -20,13 +20,13 @@
 ] as const;
 export type DnDSkillName = typeof skillNames[number];
 
-interface DnDSkill {
+export interface DnDSkill {
   skillName: DnDSkillName,
   ability: string,
   exampleUse: string
 }
 
-const skills: DnDSkill[] = [
+export const skills: DnDSkill[] = [
   {
     skillName: "Acrobatics",
     ability: "Dexterity",

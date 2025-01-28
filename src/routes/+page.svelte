@@ -8,6 +8,8 @@
   import type {DnDSkillName} from "$lib/srdData/skills";
   import ReadonlyInput from "$lib/components/common/ReadonlyInput.svelte";
   import type {DnDSpecies} from "$lib/srdData/species";
+  import AbilityScoreBox from "$lib/components/common/AbilityScoreBox.svelte";
+  import ProficiencyBonusBox from "$lib/components/common/ProficiencyBonusBox.svelte";
 
   let characterName = $state<string>('');
   let selectedClass = $state<DnDClass>();
@@ -123,6 +125,37 @@
                             <p>Saving Throw Proficiencies: {getSavingThrowProficiencies(selectedClass)}</p>
                         </div>
                     {/if}
+
+                    <div class="flex gap-6 justify-evenly">
+                        <div class="flex flex-col justify-between">
+                            <ProficiencyBonusBox bonus={2}/>
+                            <AbilityScoreBox name="STR" modifier={2} score={15}/>
+                            <AbilityScoreBox name="DEX" modifier={2} score={14}/>
+                            <AbilityScoreBox name="CON" modifier={1} score={13}/>
+                        </div>
+                        <div class="flex flex-col justify-between">
+                            <AbilityScoreBox name="INT" modifier={1} score={12}/>
+                            <AbilityScoreBox name="WIS" modifier={0} score={10}/>
+                            <AbilityScoreBox name="CHA" modifier={-1} score={8}/>
+                        </div>
+                    </div>
+
+
+                    <!--                    <div class="grid grid-cols-2 grid-flow-col grid-rows-[repeat(5,_1fr)]">-->
+                    <!--                        <div class="col-start-1  bg-blue-100"><ProficiencyBonusBox bonus={2}/></div>-->
+
+                    <!--                        <div class="col-start-1  bg-red-100"><AbilityScoreBox name="STR" modifier={2} score={15}/></div>-->
+                    <!--                        <div class="col-start-1  bg-orange-100"><AbilityScoreBox name="DEX" modifier={2} score={14}/></div>-->
+                    <!--                        <div class="col-start-1  bg-green-100"><AbilityScoreBox name="CON" modifier={1} score={13}/></div>-->
+
+                    <!--                        <div class="col-start-1 bg-blue-100"><div style="height: 64px">HEROIC INSPIRATION! 1</div></div>-->
+
+                    <!--                        <div class="col-start-2  bg-blue-400"><AbilityScoreBox name="INT" modifier={1} score={12}/></div>-->
+                    <!--                        <div class="col-start-2  bg-gray-200"><AbilityScoreBox name="WIS" modifier={0} score={10}/></div>-->
+                    <!--                        <div class="col-start-2  bg-purple-300"><AbilityScoreBox name="CHA" modifier={-1} score={8}/></div>-->
+                    <!--                    </div>-->
+
+
                 </div>
             </div>
         </div>
