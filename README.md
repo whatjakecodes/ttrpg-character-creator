@@ -1,23 +1,34 @@
-# DND Characters
+# TTRPG Character Creator
 
 Using Static Site Generation adapter in `svelte.config.js`
 
 ## To Do
-* [ ] setup basic character sheet
-  * [x] Class Name
-  * [ ] Class Proficiencies
+* [ ] Create a character manually
+  * [x] Class
+  * [x] Background
+  * [x] Background Skills
+  * [x] Class Skills
   * [ ] Class Starting Equipment
-  * [ ] ...
-* [x] research LLM API integration
-* [ ] Import SRD classes from JSON data
+  * [ ] Background Starting Equipment
+  * [ ] Species
+  * [ ] Subclass
+  * [ ] Spells
+* [ ] Add Custom data
+  * [ ] Classes
+  * [ ] Backgrounds
+  * [ ] Skills
+  * [ ] Equipment
+  * [ ] Species
+  * [ ] Spells
+* [ ] LLM Integration
+  * [x] research LLM API integration
+  * [x] Create your own class from Claude prompt
+  * [ ] Save generated class to local browser database
+  * [ ] Export / import class JSON
+* [X] Import SRD classes from JSON data
   * Dropdown to select the class
   * SRD 5.1
-* [ ] Setup Tailwind CSS/Bootstrap
-* [ ] Create your own class without LLM parsing
-  * Form to save a class / background / species / equipment
-* [x] Create your own class from Claude prompt
-  * [ ] Save generated class to local browser database
-  * [ ] Export / import class JSON 
+* [X] Setup Tailwind CSS/Bootstrap
 
 ## Developing
 
@@ -32,7 +43,6 @@ npm run dev
 To create a production version of your app:
 
 ```bash
-# from directory /stuff/dnd/dnd-app
 npm run build
 ```
 
