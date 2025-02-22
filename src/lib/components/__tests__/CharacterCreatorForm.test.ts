@@ -9,15 +9,13 @@ function NO_OP() {
 
 test('shows class list', () => {
   const props: CharacterCreatorFormProps = {
-    characterName: "test-character-name",
+    selection: {characterName: "test-character-name", classSkills: []},
     onCharacterNameChange: NO_OP,
     classes: [
       createDndClass({name: 'testClass1', index: 'testClass1index'}),
       createDndClass({name: 'testClass2', index: 'testClass2index'})
     ],
-    background: undefined,
-    characterClass: undefined,
-    selectedClassSkills: [],
+    onSpeciesChange: NO_OP,
     onCharacterClassChange: NO_OP,
     onBackgroundChange: NO_OP,
     onClassSkillsChange: NO_OP,

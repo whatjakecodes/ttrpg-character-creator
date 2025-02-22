@@ -9,12 +9,8 @@
   import {species} from "$lib/srdData/species";
 
   const {
-    characterName,
+    selection,
     classes,
-    characterClass,
-    background,
-    selectedSpecies,
-    selectedClassSkills,
     onCharacterNameChange,
     onCharacterClassChange,
     onBackgroundChange,
@@ -44,16 +40,16 @@
   }
 
   function onToggleClassSkill(skill: DnDSkillName): void {
-    const newClassSkills = selectedClassSkills.includes(skill)
-        ? new Set([...selectedClassSkills].filter(x => x !== skill))
-        : new Set([...selectedClassSkills, skill].slice(-2));
+    const newClassSkills = selection.classSkills.includes(skill)
+        ? new Set([...selection.classSkills].filter(x => x !== skill))
+        : new Set([...selection.classSkills, skill].slice(-2));
     onClassSkillsChange(Array.from(newClassSkills));
   }
 
-  const classSkillChoices = $derived(characterClass ? getSkillChoiceOptions(characterClass) : []);
-  const backgroundSkills = $derived(background ? background.starting_skill_proficiencies : []);
-  const allActiveSkills = $derived(new Set<DnDSkillName>([...backgroundSkills, ...selectedClassSkills]));
-  const selectedSpeciesIndex = $derived(selectedSpecies?.index) as string;
+  const classSkillChoices = $derived(selection.characterClass ? getSkillChoiceOptions(selection.characterClass) : []);
+  const backgroundSkills = $derived(selection.background ? selection.background.starting_skill_proficiencies : []);
+  const allActiveSkills = $derived(new Set<DnDSkillName>([...backgroundSkills, ...selection.classSkills]));
+  const selectedSpeciesIndex = $derived(selection.species?.index) as string;
 </script>
 
 <div class="flex flex-col gap-2 mb-2">
@@ -64,7 +60,7 @@
             id="char-name"
             type="text"
             class="rounded-lg border-gray-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            value={characterName}
+            value={selection.characterName}
             autocomplete="off"
             oninput={e => onCharacterNameChange(e.currentTarget.value)}
     />
@@ -73,12 +69,12 @@
 <div class="flex flex-col gap-2 mb-2">
     <ClassSelect
             options={classes}
-            value={characterClass?.index}
+            value={selection.characterClass?.index}
             change={handleClassChange}
     />
 </div>
 
-{#if characterClass}
+{#if selection.characterClass}
     <div class="flex flex-col gap-2 mb-2">
         <label
                 for="species-select"
@@ -106,14 +102,14 @@
     <div class="flex flex-col gap-2 mb-2">
         <BackgroundSelect
                 options={backgrounds}
-                value={background?.index}
+                value={selection.background?.index}
                 onChange={handleBackgroundChange}
         />
     </div>
 {/if}
 
-{#if background && characterClass}
-    <Label for="choose-skills" id="choose-skills-label" text="Choose 2 {characterClass.name} Class Skills:"/>
+{#if selection.background && selection.characterClass}
+    <Label for="choose-skills" id="choose-skills-label" text="Choose 2 {selection.characterClass.name} Class Skills:"/>
     <div role="group" id="choose-skills" aria-labelledby="choose-skills-label" class="flex flex-wrap gap-4 p-4 mb-2">
         {#each classSkillChoices as skillName}
             <button

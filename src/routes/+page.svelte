@@ -10,41 +10,37 @@
   import type {DnDSpecies} from "$lib/srdData/species";
   import AbilityScoreBox from "$lib/components/common/AbilityScoreBox.svelte";
   import ProficiencyBonusBox from "$lib/components/common/ProficiencyBonusBox.svelte";
+  import type {DnDSelection} from "$lib";
 
-  let characterName = $state<string>('');
-  let selectedClass = $state<DnDClass>();
-  let selectedBackground = $state<DnDBackground>();
-  let selectedSpecies = $state<DnDSpecies>();
-  let selectedClassSkills = $state<DnDSkillName[]>([]);
+  let selection = $state<DnDSelection>({classSkills: []});
 
   const handleCharacterNameChange = (newName: string) => {
-    characterName = newName;
+    selection.characterName = newName;
   };
 
   const handleCharacterClassChange = (newClass: DnDClass) => {
-    selectedClass = newClass;
-    selectedClassSkills = [];
+    selection.characterClass = newClass;
+    selection.classSkills = [];
   };
 
   const handleBackgroundChange = (newBackground: DnDBackground) => {
-    selectedBackground = newBackground;
+    selection.background = newBackground;
   };
 
   const handleSpeciesChange = (newSpecies: DnDSpecies) => {
-    console.log({newSpecies, selectedSpecies})
-    selectedSpecies = newSpecies;
+    selection.species = newSpecies;
   };
 
   const handleClassSkillsChange = (newSkills: DnDSkillName[]) => {
-    selectedClassSkills = newSkills;
+    selection.classSkills = newSkills;
   };
 
   function getSavingThrowProficiencies(forClass: DnDClass): string {
     return forClass.saving_throws.map(st => presentDnDAbility(st.name as DnDAbility)).join(", ");
   }
 
-  const backgroundSkills: DnDSkillName[] = $derived(selectedBackground ? selectedBackground.starting_skill_proficiencies : []);
-  const selectedSkills: DnDSkillName[] = $derived(Array.from(new Set([...backgroundSkills, ...selectedClassSkills])));
+  const backgroundSkills: DnDSkillName[] = $derived(selection.background ? selection.background.starting_skill_proficiencies : []);
+  const selectedSkills: DnDSkillName[] = $derived(Array.from(new Set([...backgroundSkills, ...selection.classSkills])));
 </script>
 
 <div class="min-h-screen p-4 md:p-8 bg-gray-50">
@@ -60,12 +56,8 @@
                         <div class="text-red-600">{$dndSRDStore.error}</div>
                     {:else}
                         <CharacterCreatorForm
-                                characterName={characterName}
+                                selection={selection}
                                 classes={$dndSRDStore.characterCreator.getClassList()}
-                                characterClass={selectedClass}
-                                background={selectedBackground}
-                                selectedSpecies={selectedSpecies}
-                                selectedClassSkills={selectedClassSkills}
                                 onCharacterNameChange={handleCharacterNameChange}
                                 onCharacterClassChange={handleCharacterClassChange}
                                 onBackgroundChange={handleBackgroundChange}
@@ -86,19 +78,19 @@
                 <h2 class="text-2xl mb-8 text-gray-800">Character Sheet</h2>
                 <div class="space-y-6">
                     <div class="flex flex-col gap-1">
-                        <ReadonlyInput value={characterName} labelText="Character Name"/>
+                        <ReadonlyInput value={selection.characterName} labelText="Character Name"/>
                     </div>
 
                     <div class="flex flex-col lg:flex-row lg:items-stretch gap-2">
                         <div class="w-full lg:w-1/2">
                             <div class="flex-col gap-1">
-                                <ReadonlyInput inputId="backgroundId" value={selectedBackground?.name}
+                                <ReadonlyInput inputId="backgroundId" value={selection.background?.name}
                                                labelText="Background"/>
                             </div>
                         </div>
                         <div class="w-full lg:w-1/2">
                             <div class="flex-col gap-1">
-                                <ReadonlyInput inputId="classId" value={selectedClass?.name} labelText="Class"/>
+                                <ReadonlyInput inputId="classId" value={selection.characterClass?.name} labelText="Class"/>
                             </div>
                         </div>
                     </div>
@@ -106,7 +98,7 @@
                     <div class="flex flex-col lg:flex-row lg:items-stretch gap-2">
                         <div class="w-full lg:w-1/2">
                             <div class="flex-col gap-1">
-                                <ReadonlyInput inputId="speciesId" value={selectedSpecies?.name} labelText="Species"/>
+                                <ReadonlyInput inputId="speciesId" value={selection.species?.name} labelText="Species"/>
                             </div>
                         </div>
                         <div class="w-full lg:w-1/2">
@@ -116,13 +108,13 @@
                         </div>
                     </div>
 
-                    {#if selectedClass}
+                    {#if selection.characterClass}
                         <div class="flex flex-col gap-2">
                             <p>Selected Skills: {selectedSkills.join(', ')}</p>
                         </div>
 
                         <div class="flex flex-col gap-2">
-                            <p>Saving Throw Proficiencies: {getSavingThrowProficiencies(selectedClass)}</p>
+                            <p>Saving Throw Proficiencies: {getSavingThrowProficiencies(selection.characterClass)}</p>
                         </div>
                     {/if}
 
@@ -139,23 +131,6 @@
                             <AbilityScoreBox name="CHA" modifier={-1} score={8}/>
                         </div>
                     </div>
-
-
-                    <!--                    <div class="grid grid-cols-2 grid-flow-col grid-rows-[repeat(5,_1fr)]">-->
-                    <!--                        <div class="col-start-1  bg-blue-100"><ProficiencyBonusBox bonus={2}/></div>-->
-
-                    <!--                        <div class="col-start-1  bg-red-100"><AbilityScoreBox name="STR" modifier={2} score={15}/></div>-->
-                    <!--                        <div class="col-start-1  bg-orange-100"><AbilityScoreBox name="DEX" modifier={2} score={14}/></div>-->
-                    <!--                        <div class="col-start-1  bg-green-100"><AbilityScoreBox name="CON" modifier={1} score={13}/></div>-->
-
-                    <!--                        <div class="col-start-1 bg-blue-100"><div style="height: 64px">HEROIC INSPIRATION! 1</div></div>-->
-
-                    <!--                        <div class="col-start-2  bg-blue-400"><AbilityScoreBox name="INT" modifier={1} score={12}/></div>-->
-                    <!--                        <div class="col-start-2  bg-gray-200"><AbilityScoreBox name="WIS" modifier={0} score={10}/></div>-->
-                    <!--                        <div class="col-start-2  bg-purple-300"><AbilityScoreBox name="CHA" modifier={-1} score={8}/></div>-->
-                    <!--                    </div>-->
-
-
                 </div>
             </div>
         </div>
