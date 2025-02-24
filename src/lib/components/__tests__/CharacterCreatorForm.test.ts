@@ -3,13 +3,14 @@ import {render, screen, within} from "@testing-library/svelte";
 import CharacterCreatorForm from "$lib/components/CharacterCreatorForm.svelte";
 import type {CharacterCreatorFormProps} from "$lib/components/types";
 import {createDndClass} from "$lib/stores/dnd5eStore/__tests__/testDataUtil";
+import {DnDSelection} from "$lib";
 
 function NO_OP() {
 }
 
 test('shows class list', () => {
   const props: CharacterCreatorFormProps = {
-    selection: {characterName: "test-character-name", classSkills: []},
+    selection: new DnDSelection("test-character-name"),
     onCharacterNameChange: NO_OP,
     classes: [
       createDndClass({name: 'testClass1', index: 'testClass1index'}),

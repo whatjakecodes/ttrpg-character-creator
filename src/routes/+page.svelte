@@ -10,9 +10,9 @@
   import type {DnDSpecies} from "$lib/srdData/species";
   import AbilityScoreBox from "$lib/components/common/AbilityScoreBox.svelte";
   import ProficiencyBonusBox from "$lib/components/common/ProficiencyBonusBox.svelte";
-  import type {DnDSelection} from "$lib";
+  import {DnDSelection} from "$lib";
 
-  let selection = $state<DnDSelection>({classSkills: []});
+  let selection = $state<DnDSelection>(new DnDSelection());
 
   const handleCharacterNameChange = (newName: string) => {
     selection.characterName = newName;
@@ -90,7 +90,9 @@
                         </div>
                         <div class="w-full lg:w-1/2">
                             <div class="flex-col gap-1">
-                                <ReadonlyInput inputId="classId" value={selection.characterClass?.name} labelText="Class"/>
+                                <ReadonlyInput inputId="classId"
+                                               value={selection.characterClass?.name}
+                                               labelText="Class"/>
                             </div>
                         </div>
                     </div>
@@ -120,15 +122,15 @@
 
                     <div class="flex gap-6 justify-evenly">
                         <div class="flex flex-col justify-between">
-                            <ProficiencyBonusBox bonus={2}/>
-                            <AbilityScoreBox name="STR" modifier={2} score={15}/>
-                            <AbilityScoreBox name="DEX" modifier={2} score={14}/>
-                            <AbilityScoreBox name="CON" modifier={1} score={13}/>
+                            <ProficiencyBonusBox bonus={selection.proficiencyBonus}/>
+                            <AbilityScoreBox name="STR" selection={selection}/>
+                            <AbilityScoreBox name="DEX" selection={selection}/>
+                            <AbilityScoreBox name="CON" selection={selection}/>
                         </div>
                         <div class="flex flex-col justify-between">
-                            <AbilityScoreBox name="INT" modifier={1} score={12}/>
-                            <AbilityScoreBox name="WIS" modifier={0} score={10}/>
-                            <AbilityScoreBox name="CHA" modifier={-1} score={8}/>
+                            <AbilityScoreBox name="INT" selection={selection}/>
+                            <AbilityScoreBox name="WIS" selection={selection}/>
+                            <AbilityScoreBox name="CHA" selection={selection}/>
                         </div>
                     </div>
                 </div>
